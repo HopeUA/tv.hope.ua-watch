@@ -1,0 +1,16 @@
+{
+  "name": "where-watch-us",
+  "version": "1.0.0",
+  "description": "Watch us sync",
+  "author": "Sergey Sadovoi <sergey@hope.ua>",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^2.8.1",
+    "config": "^1.14.0",
+    "debug": "^2.1.3",
+    "google-spreadsheets": "^0.4.2",
+    "googleapis": "^2.0.6",
+    "moment": "^2.10.3",
+    "request": "^2.58.0"
+  }
+}
