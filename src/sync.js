@@ -1,9 +1,9 @@
 import Logger from 'utils/logger';
 import Spreadsheets from 'utils/spreadsheets';
-import Util from 'util';
 import Fs from 'fs';
 import Config from 'config';
 import getCityCoords from 'utils/coords';
+import Paths from 'data/paths.json';
 
 async function Sync() {
     // 1. Прочитать данные из гугл таблицы
@@ -30,6 +30,7 @@ async function Sync() {
                         y: current.regiontitley
                     }
                 },
+                path: Paths[current.regionid],
                 cities: []
             };
             regions.push(currentRegion);
