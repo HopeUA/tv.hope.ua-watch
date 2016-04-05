@@ -3,11 +3,12 @@ import Spreadsheets from 'utils/spreadsheets';
 import Util from 'util';
 import Fs from 'fs';
 import Config from 'config';
+import getCityCoords from 'utils/coords';
 
 async function Sync() {
     // 1. Прочитать данные из гугл таблицы
     const rows = await Spreadsheets();
-    console.log(rows);
+
     // 2. Проверить данные на корректность
     // 3. Сгенерировать массив областей
     let regions = [];
@@ -16,7 +17,9 @@ async function Sync() {
     let currentRegion = null;
     let currentCity   = null;
 
-    rows.forEach((current) => {
+    for (let i = 0; i < rows.length; i++) {
+        current = rows[i];
+
         if (typeof current.regionid === 'string') {
             currentRegion = {
                 id: current.regionid,
@@ -36,10 +39,7 @@ async function Sync() {
             currentCity = {
                 id: current.cityid,
                 title: current.citytitle,
-                pos: {
-                    lat: current.citylat,
-                    lon: current.citylon
-                },
+                pos: await getCityCoords(current.citytitle + ',' + currentRegion.title.text + ' область,Україна'),
                 providers: []
             };
             currentRegion.cities.push(currentCity);
@@ -53,7 +53,7 @@ async function Sync() {
                 website: typeof current.providerwebsite === 'string' ? current.providerwebsite : undefined
             });
         }
-    });
+    }
 
     // 4. Записать в файл json
     Fs.writeFile(Config.get('json'), JSON.stringify(regions, null, 2));
