@@ -8,9 +8,8 @@ import Paths from 'data/paths.json';
 async function Sync() {
     // 1. Прочитать данные из гугл таблицы
     const rows = await Spreadsheets();
-
-    // 2. Проверить данные на корректность
-    // 3. Сгенерировать массив областей
+    Logger.info(`Получено ${rows.length} строк из таблицы`);
+    
     let regions = [];
 
     let current;
@@ -19,7 +18,12 @@ async function Sync() {
 
     for (let i = 0; i < rows.length; i++) {
         current = rows[i];
-
+        
+        // 2. Проверить данные на корректность
+        
+        
+        
+        // 3. Сгенерировать массив областей
         if (typeof current.regionid === 'string') {
             currentRegion = {
                 id: current.regionid,

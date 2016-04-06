@@ -1,6 +1,5 @@
 import Google from 'googleapis';
 import SpreadSheets from 'google-spreadsheets';
-import Moment from 'moment';
 import Config from 'config';
 import Promise from 'bluebird';
 
