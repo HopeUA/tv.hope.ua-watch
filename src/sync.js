@@ -2,8 +2,9 @@ import Logger from 'utils/logger';
 import Spreadsheets from 'utils/spreadsheets';
 import Fs from 'fs';
 import Config from 'config';
-import getCityCoords from 'utils/coords';
+import City from 'utils/city';
 import Paths from 'data/paths.json';
+import validate from 'utils/validate';
 
 async function Sync() {
     // 1. Прочитать данные из гугл таблицы
@@ -20,18 +21,22 @@ async function Sync() {
         current = rows[i];
         
         // 2. Проверить данные на корректность
-        
-        
-        
+        const validateErrors = validate(current);
+        if (validateErrors.length > 0) {
+            validateErrors.forEach((error) => {
+                Logger.error(`[строка ${i + 2}, ${error.title}] ${error.message}`);
+            });
+        }
+
         // 3. Сгенерировать массив областей
-        if (typeof current.regionid === 'string') {
+        if (current.regionid !== '') {
             currentRegion = {
-                id: current.regionid,
+                id: parseInt(current.regionid),
                 title: {
                     text: current.regiontitle,
                     pos: {
-                        x: current.regiontitlex,
-                        y: current.regiontitley
+                        x: parseInt(current.regiontitlex),
+                        y: parseInt(current.regiontitley)
                     }
                 },
                 path: Paths[current.regionid],
@@ -40,17 +45,17 @@ async function Sync() {
             regions.push(currentRegion);
         }
 
-        if (typeof current.cityid === 'string') {
+        if (current.city !== '') {
             currentCity = {
-                id: current.cityid,
-                title: current.citytitle,
-                pos: await getCityCoords(current.citytitle + ',' + currentRegion.title.text + ' область,Україна'),
+                id: await City.getId(current.city),
+                title: current.city,
+                pos: await City.getCoords(current.city + ',' + currentRegion.title.text + ' область,Україна'),
                 providers: []
             };
             currentRegion.cities.push(currentCity);
         }
 
-        if (typeof current.providertitle === 'string') {
+        if (current.providertitle !== '') {
             currentCity.providers.push({
                 id: currentCity.id + '-' + (currentCity.providers.length + 1),
                 title: current.providertitle,

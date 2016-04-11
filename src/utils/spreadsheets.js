@@ -29,7 +29,16 @@ export default async function() {
     const worksheet = spreadsheet.worksheets[0];
 
     Promise.promisifyAll(worksheet);
-    const rows = await worksheet.rowsAsync({});
+
+    let rows = await worksheet.rowsAsync({});
+    rows = rows.map((row) => {
+        const newRow = {};
+        Object.keys(row).forEach((key) => {
+            newRow[key] = typeof row[key] === 'string' ? row[key] : '';
+        });
+
+        return newRow;
+    });
 
     return rows;
 }
