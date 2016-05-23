@@ -33,7 +33,7 @@ async function Sync() {
             currentRegion = {
                 id: parseInt(current.regionid),
                 title: {
-                    text: current.regiontitle,
+                    text: current.regiontitle.trim(),
                     pos: {
                         x: parseInt(current.regiontitlex),
                         y: parseInt(current.regiontitley)
@@ -48,7 +48,7 @@ async function Sync() {
         if (current.city !== '') {
             currentCity = {
                 id: await City.getId(current.city),
-                title: current.city,
+                title: current.city.trim(),
                 pos: await City.getCoords(current.city + ',' + currentRegion.title.text + ' область,Україна'),
                 providers: []
             };
@@ -58,9 +58,9 @@ async function Sync() {
         if (current.providertitle !== '') {
             currentCity.providers.push({
                 id: currentCity.id + '-' + (currentCity.providers.length + 1),
-                title: current.providertitle,
-                phones: current.providerphones.split('\n'),
-                website: typeof current.providerwebsite === 'string' ? current.providerwebsite : undefined
+                title: current.providertitle.trim(),
+                phones: current.providerphones.split('\n').map((phone) => phone.trim()),
+                website: typeof current.providerwebsite === 'string' ? current.providerwebsite.trim() : undefined
             });
         }
     }
